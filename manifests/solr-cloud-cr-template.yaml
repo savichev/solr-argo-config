@@ -1,0 +1,284 @@
+apiVersion: solr.apache.org/v1beta1
+kind: SolrCloud
+metadata:
+  name: "solr-{{ .Values.environment }}"
+  namespace: solr-{{ .Values.environment }}
+  labels:
+    environment: "{{ .Values.environment }}"
+    stage: "{{ .Values.stage }}"
+spec:
+  replicas: {{ .Values.solr.replicas }}
+  solrImage:
+    repository: "docker.komus.net/solr/komus-solr"
+    tag: 9.5
+    pullPolicy: Always
+
+  additionalLibs:
+    - "/opt/solr/shared-libs/"
+
+  solrJavaMem: "{{ .Values.solr.JavaMem }}"
+  solrLogLevel: "{{ .Values.solr.LogLevel }}"
+  solrOpts: "{{ .Values.solr.Opts }}"
+
+
+  customSolrKubeOptions:
+    podOptions:
+      annotations:
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/role: "solr-role-{{ .Values.environment }}"
+        vault.hashicorp.com/agent-inject-template-security.json: |
+          {{- with secret (printf "secret/data/solr/security/%s" .Values.stage) -}}
+          {
+            "authentication": {
+              "class": "solr.BasicAuthPlugin",
+              "blockUnknown": false,
+              "realm": "Komus Solr production users",
+              "credentials": {
+                "komussolrprod": "{{ .Data.data.komussolrprod_password }}",
+                "solr": "{{ .Data.data.solr_password }}",
+                "k8s-oper": "ihb0rUCvU6T/jWUT2HbbQUCe6yBwAzZvaVspHUFwaBw= S2g0SlJCdGM5SktP",
+                "admin": "{{ .Data.data.admin_password }}"
+              },
+              "forwardCredentials": false
+            },
+            "authorization": {
+              "class": "solr.RuleBasedAuthorizationPlugin",
+              "permissions": [
+                {
+                  "path": "read",
+                  "role": "index-read"
+                },
+                {
+                  "name": "read",
+                  "role": [
+                    "index-read",
+                    "admin",
+                    "users",
+                    "k8s"
+                  ]
+                },
+                {
+                  "name": "update",
+                  "role": [
+                    "index-write",
+                    "admin"
+                  ]
+                },
+                {
+                  "name": "core-admin-read",
+                  "role": "index-write"
+                },
+                {
+                  "name": "core-admin-edit",
+                  "role": "index-write"
+                },
+                {
+                  "name": "collection-admin-read",
+                  "role": "index-write"
+                },
+                {
+                  "name": "collection-admin-edit",
+                  "role": [
+                    "index-write",
+                    "k8s"
+                  ]
+                },
+                {
+                  "name": "schema-read",
+                  "role": "index-write"
+                },
+                {
+                  "name": "schema-edit",
+                  "role": "index-write"
+                },
+                {
+                  "collection": "*",
+                  "path": "/schema/managed/*",
+                  "role": "index-write"
+                },
+                {
+                  "collection": "*",
+                  "path": "/schema/analysis/*",
+                  "role": "index-write"
+                },
+                {
+                  "collection": "*",
+                  "path": "/admin/luke",
+                  "role": "index-write"
+                },
+                {
+                  "collection": null,
+                  "path": "/admin/cores",
+                  "params": {
+                    "action": [
+                      "STATUS"
+                    ]
+                  },
+                  "role": "index-write"
+                },
+                {
+                  "collection": null,
+                  "path": "/admin/collections",
+                  "role": [
+                    "index-write",
+                    "k8s"
+                  ]
+                },
+                {
+                  "name": "config-read",
+                  "role": "admin"
+                },
+                {
+                  "name": "config-edit",
+                  "role": "admin"
+                },
+                {
+                  "name": "security-read",
+                  "role": "admin"
+                },
+                {
+                  "name": "security-edit",
+                  "role": "admin"
+                },
+                {
+                  "path": "/",
+                  "role": null
+                },
+                {
+                  "path": "/libs/*",
+                  "role": null
+                },
+                {
+                  "path": "/js/*",
+                  "role": null
+                },
+                {
+                  "path": "/img/*",
+                  "role": null
+                },
+                {
+                  "path": "/css/*",
+                  "role": null
+                },
+                {
+                  "name": "k8s-probe-0",
+                  "role": null,
+                  "collection": null,
+                  "path": "/admin/info/system"
+                },
+                {
+                  "name": "k8s-probe-1",
+                  "role": null,
+                  "collection": null,
+                  "path": "/admin/info/health"
+                },
+                {
+                  "name": "k8s-metrics",
+                  "role": "k8s",
+                  "collection": null,
+                  "path": "/admin/metrics"
+                },
+                {
+                  "name": "k8s-zk",
+                  "role": "k8s",
+                  "collection": null,
+                  "path": "/admin/zookeeper/status"
+                },
+                {
+                  "name": "k8s-ping",
+                  "role": "k8s",
+                  "collection": "*",
+                  "path": "/admin/ping"
+                },
+                {
+                  "name": "k8s-replica-balancing",
+                  "role": "k8s",
+                  "collection": null,
+                  "path": "/____v2/cluster/replicas/balance"
+                },
+                {
+                  "name": "all",
+                  "role": "admin"
+                }
+              ],
+              "user-role": {
+                "komussolrprod": [
+                  "index-read",
+                  "index-write",
+                  "admin",
+                  "k8s"
+                ],
+                admin": [
+                  "admin",
+                  "k8s"
+                ],
+                "k8s-oper": [
+                  "k8s"
+                ],
+                "solr": [
+                  "users",
+                  "k8s"
+                ]
+              }
+            }
+          }
+          {{- end }}
+        vault.hashicorp.com/agent-inject-secret-security.json: "secret/data/solr/security/{{ .Values.stage }}"
+        vault.hashicorp.com/agent-inject-command: "cp /vault/secrets/security.json /var/solr/security.json && chown solr:solr /var/solr/security.json"
+        vault.hashicorp.com/auth-type: "kubernetes"
+        vault.hashicorp.com/auth-path: "auth/kubernetes"
+        vault.hashicorp.com/service-account: "solr-service-account-{{ .Values.environment }}"
+
+  envVars:
+    - name: STAGE
+      value: "{{ .Values.stage }}"
+    - name: ENVIRONMENT
+      value: "{{ .Values.environment }}"
+
+  solrSecurity:
+    authenticationType: Basic
+    basicAuthSecret: "{{ .Values.environment }}-solrcloud-basic-auth"
+    bootstrapSecurityJson:
+      name: "{{ .Values.environment }}-solr-security-json"
+      key: security.json
+
+#  backupRepositories:
+#    - name: "nfs-collection-restore"
+#      volume:
+#        directory:    "restore"
+#        source:
+#          nfs:
+#            server:   "share-solrstorage1.komus.net"
+#            path:     "/zroot/storage/solr/9.5.0"
+#            readOnly: true
+
+  dataStorage:
+    persistent: {{ .Values.solr.storage.persistent }}
+
+  zookeeperRef:
+    provided:
+      chroot: "/solr"
+      replicas: {{ .Values.zk.replicas }}
+      image:
+        repository: "docker.komus.net/solr/komus-zookeeper"
+        tag: "3.9.1"
+        pullPolicy: IfNotPresent
+
+      persistence: {{ .Values.zk.storage.persistent }}
+
+  solrAddressability:
+    external:
+      method: Ingress
+      domainName: "apps.p4h-shared-k8s.komus.net"
+      useExternalAddress: true
+    commonServicePort: 80
+    podPort: 8983
+
+  customSolrKubeOptions:
+    configMapOptions:
+      providedConfigMap: "{{ .Values.environment }}-solrcloud-configmap-custom"
+    podOptions:
+      resources: {{ .Values.solr.resources }}
+
+    ingressOptions:
+      ingressClassName: "nginx"

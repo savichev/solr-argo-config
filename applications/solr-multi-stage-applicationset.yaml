@@ -1,0 +1,46 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: solr-multi-stage
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - stage: "development"
+            environment: "dev"
+          - stage: "qa"
+            environment: "qa"
+
+  template:
+    metadata:
+      name: 'solr-{{environment}}'
+      labels:
+        environment: '{{environment}}'
+        stage: '{{stage}}'
+    spec:
+      project: default
+      source:
+        repoURL: https://git@bitbucket-app.komus.net:7999/~savichev/solr-argo-config.git
+        targetRevision: master
+        path: manifests
+        plugin:
+          name: vault-agent
+        helm:
+          valueFiles:
+            - ../values/values-{{environment}}.yaml
+          parameters:
+            - name: environment
+              value: "{{environment}}"
+            - name: stage
+              value: "{{stage}}"
+      destination:
+        server: 'https://kubernetes.default.svc'
+        namespace: solr-{{environment}}
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - PruneLast=true
