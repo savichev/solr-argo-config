@@ -21,7 +21,7 @@ spec:
     spec:
       project: default
       source:
-        repoURL: https://git@bitbucket-app.komus.net:7999/~savichev/solr-argo-config.git
+        repoURL: https://github.com/savichev/solr-argo-config
         targetRevision: master
         path: manifests
         plugin:

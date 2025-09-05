@@ -19,6 +19,21 @@ spec:
           value: "true"
         - name: watchNamespaces
           value: "solr-dev,solr-qa"
+      values: |
+        vaultAgent:
+          enabled: true
+          config: |
+            exit_after_auth = false
+            vault {
+              address = "https://deploy.komus.net:8201"
+            }
+            auto_auth {
+              method "kubernetes" {
+                config = {
+                  role = "solr-role-qa"
+                }
+              }
+            }
   destination:
     server: https://kubernetes.default.svc
     namespace: solr-operator
