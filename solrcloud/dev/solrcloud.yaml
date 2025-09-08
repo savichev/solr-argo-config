@@ -49,6 +49,17 @@ spec:
 
   # Конфигурация Java
   solrJavaMem: "-Xms2g -Xmx2g"
+  solrLogLevel: "INFO"
+#  solrOpts: "-Dsolr.environment=test,label=P4H,color=green"
+
+#  solrSecurity:
+#    authenticationType: Basic
+#    basicAuthSecret: p4h-solrcloud-basic-auth
+#    bootstrapSecurityJson:
+#      name: p4h-solr-security-json
+#      key: security.json
+
+
 
   # Доступ к сервису
 #  customSolrKubeOptions:
@@ -76,3 +87,26 @@ spec:
 #  updateStrategy:
 #    method: StatefulSetUpdate
 #    restartSchedule: "0 4 * * *" # Например, ежедневная перезагрузка в 4 утра
+
+
+  solrAddressability:
+    external:
+      method: Ingress
+      domainName: "apps.p4h-shared-k8s.komus.net"
+      useExternalAddress: true
+    commonServicePort: 80
+    podPort: 8983
+
+  customSolrKubeOptions:
+#    configMapOptions:
+#      providedConfigMap: p4h-solrcloud-configmap-custom
+    podOptions:
+      resources:
+        limits:
+          cpu: "2"
+          memory: "8Gi"
+        requests:
+          cpu: "2"
+          memory: "8Gi"
+    ingressOptions:
+      ingressClassName: "nginx"
