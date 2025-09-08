@@ -13,7 +13,7 @@ spec:
   # 2. Назначение: кластер и namespace, куда будет развернут SolrCloud
   destination:
     server: 'https://kubernetes.default.svc' # Развертывание в том же кластере, где работает ArgoCD
-    namespace: 'solr-dev' # Namespace, который будет создан (должен существовать или управляться через другой Application)
+    namespace: 'solr' # Namespace, который будет создан (должен существовать или управляться через другой Application)
 
   # 3. Стратегия синхронизации
   syncPolicy:
@@ -28,7 +28,7 @@ spec:
 
   # 5. Игнорирование различий, которые не критичны для Solr
   ignoreDifferences:
-    - group: apache.solr.org
+    - group: solr.apache.org
       kind: SolrCloud
       jqPathExpressions:
         - .status # Игнорировать весь статус, так как он управляется оператором

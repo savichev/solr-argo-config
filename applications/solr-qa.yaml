@@ -1,0 +1,34 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: solrclouds
+  namespace: argocd # Namespace, где установлен ArgoCD
+spec:
+  # 1. Источник: ссылка на Git-репозиторий и путь внутри него
+  source:
+    repoURL: 'https://github.com/savichev/solr-argo-config'
+    targetRevision: HEAD # или ветка/тег, например, main, production
+    path: 'solrcloud/qa' # Путь к конфигам SolrCloud внутри репозитория
+
+  # 2. Назначение: кластер и namespace, куда будет развернут SolrCloud
+  destination:
+    server: 'https://kubernetes.default.svc' # Развертывание в том же кластере, где работает ArgoCD
+    namespace: 'solr' # Namespace, который будет создан (должен существовать или управляться через другой Application)
+
+  # 3. Стратегия синхронизации
+  syncPolicy:
+    automated:
+      prune: true # Удалять ресурсы, если они были удалены из Git
+      selfHeal: true # Автоматически исправлять дрифт конфигурации
+    syncOptions:
+      - CreateNamespace=true # Автоматически создавать namespace, если он не существует
+
+  # 4. Проект (опционально, для multi-tenant окружений)
+  project: default
+
+  # 5. Игнорирование различий, которые не критичны для Solr
+  ignoreDifferences:
+    - group: solr.apache.org
+      kind: SolrCloud
+      jqPathExpressions:
+        - .status # Игнорировать весь статус, так как он управляется оператором
