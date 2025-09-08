@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: solrclouds
+  name: solr-qa
   namespace: argocd # Namespace, где установлен ArgoCD
 spec:
   # 1. Источник: ссылка на Git-репозиторий и путь внутри него
