@@ -7,18 +7,24 @@ spec:
   # Конфигурация ZooKeeper
   zookeeperRef:
     provided:
+      chroot: "/solr"
+      replicas: 1
+      image:
+        repository: "docker.komus.net/solr/komus-zookeeper"
+        tag: "3.9.1"
+        pullPolicy: IfNotPresent
+
       persistence:
-        replicas: 1
-          spec:
-        resources:
-          limits:
-            cpu: "1"
-            storage: "1Gi"
-          requests:
-            cpu: "1"
-            storage: "1Gi"
-        storageClassName: "nfs-pm"
-      reclaimPolicy: Delete
+        spec:
+          resources:
+            limits:
+              cpu: "1"
+              storage: "1Gi"
+            requests:
+              cpu: "1"
+              storage: "1Gi"
+          storageClassName: "nfs-pm"
+        reclaimPolicy: Delete
 
   # Конфигурация Solr
   replicas: 2
