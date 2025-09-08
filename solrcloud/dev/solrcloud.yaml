@@ -30,7 +30,7 @@ spec:
   replicas: 2
   solrImage:
     repository: "docker.komus.net/solr/komus-solr"
-    tag: 9.5
+    tag: "9.5"
     pullPolicy: Always
 
   additionalLibs:
@@ -51,10 +51,10 @@ spec:
   solrJavaMem: "-Xms2g -Xmx2g"
 
   # Доступ к сервису
-  customSolrKubeOptions:
-    serviceOptions:
-      annotations:
-        service.beta.kubernetes.io/aws-load-balancer-type: "nlb" # Пример для AWS NLБ
+#  customSolrKubeOptions:
+#    serviceOptions:
+#      annotations:
+#        service.beta.kubernetes.io/aws-load-balancer-type: "nlb" # Пример для AWS NLБ
 
   # Bootstrap-конфиги (опционально, но важно)
   # Способ 1: Ссылка на готовый ConfigMap
