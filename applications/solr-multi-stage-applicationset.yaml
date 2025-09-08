@@ -34,6 +34,21 @@ spec:
               value: "{{environment}}"
             - name: stage
               value: "{{stage}}"
+          values: |
+            vaultAgent:
+              enabled: true
+              config: |
+                exit_after_auth = false
+                vault {
+                  address = "https://deploy.komus.net:8201"
+                }
+                auto_auth {
+                  method "kubernetes" {
+                    config = {
+                      role = "solrclouds-role"
+                    }
+                  }
+                }
       destination:
         server: 'https://kubernetes.default.svc'
         namespace: solr-{{environment}}
