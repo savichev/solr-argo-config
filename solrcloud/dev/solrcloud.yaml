@@ -1,0 +1,72 @@
+apiVersion: apache.solr.org/v1beta1
+kind: SolrCloud
+metadata:
+  name: sandbox
+  namespace: solr-dev
+spec:
+  # Конфигурация ZooKeeper
+  zookeeperRef:
+    provided:
+      persistence:
+        replicas: 1
+          spec:
+        resources:
+          limits:
+            cpu: "1"
+            storage: "1Gi"
+          requests:
+            cpu: "1"
+            storage: "1Gi"
+        storageClassName: "nfs-pm"
+      reclaimPolicy: Delete
+
+  # Конфигурация Solr
+  replicas: 2
+  solrImage:
+    repository: "docker.komus.net/solr/komus-solr"
+    tag: 9.5
+    pullPolicy: Always
+
+  additionalLibs:
+    - "/opt/solr/shared-libs/"
+
+  # Хранилище данных
+  dataStorage:
+    persistent:
+      pvcTemplate:
+        spec:
+          resources:
+            requests:
+              storage: "3Gi"
+          storageClassName: "nfs-pm"
+      reclaimPolicy: Delete
+
+  # Конфигурация Java
+  solrJavaMem: "-Xms2g -Xmx2g"
+
+  # Доступ к сервису
+  customSolrKubeOptions:
+    serviceOptions:
+      annotations:
+        service.beta.kubernetes.io/aws-load-balancer-type: "nlb" # Пример для AWS NLБ
+
+  # Bootstrap-конфиги (опционально, но важно)
+  # Способ 1: Ссылка на готовый ConfigMap
+  # customSolrKubeOptions:
+  #   configMapOptions:
+  #     provided:
+  #       name: "my-solr-configs"
+
+#  # Способ 2: Указание на конфиги в репозитории (будет смонтирован как Volumе)
+#  # bootstrap:
+#  #   url: https://github.com/your-org/your-solr-configs/archive/refs/heads/main.zip
+#  #   volume:
+#  #     source:
+#  #       zip:
+#  #         url: https://github.com/your-org/your-solr-configs/archive/refs/heads/main.zip
+#  #     path: /your-solr-configs-main/conf
+
+  # Настройки обновления
+#  updateStrategy:
+#    method: StatefulSetUpdate
+#    restartSchedule: "0 4 * * *" # Например, ежедневная перезагрузка в 4 утра

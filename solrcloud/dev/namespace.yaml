@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: solr-dev
+  labels:
+    name: solr-dev
+    # Метки для мониторинга (например, для Prometheus)
+    #prometheus.io/scrape: "true"
