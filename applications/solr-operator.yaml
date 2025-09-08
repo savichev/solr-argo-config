@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: solr-operator
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0" # Волна синхронизации - выполняется первой
+spec:
+  project: default
+  source:
+    repoURL: 'https://solr.apache.org/charts'
+    targetRevision: v0.9.1 # Проверьте актуальную версию
+    chart: solr-operator
+    helm:
+      releaseName: solr-operator
+      values: |
+        # Минимальные значения для установки
+        crds:
+          enabled: true
+        operator:
+          replicaCount: 1
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: 'solr-operator' # Namespace для оператора
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
