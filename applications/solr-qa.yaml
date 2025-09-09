@@ -10,6 +10,10 @@ spec:
     targetRevision: HEAD # или ветка/тег, например, main, production
     path: 'solrcloud/qa' # Путь к конфигам SolrCloud внутри репозитория
 
+  plugin:
+    
+
+
   # 2. Назначение: кластер и namespace, куда будет развернут SolrCloud
   destination:
     server: 'https://kubernetes.default.svc' # Развертывание в том же кластере, где работает ArgoCD

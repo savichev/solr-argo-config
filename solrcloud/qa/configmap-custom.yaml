@@ -1,0 +1,99 @@
+apiVersion: v1
+data:
+  log4j2.xml: |
+    <?xml version="1.0" encoding="UTF-8"?>
+    <Configuration>
+        <Appenders>
+
+            <Console name="STDOUT" target="SYSTEM_OUT">
+                <PatternLayout>
+                    <Pattern>
+                        %d{yyyy-MM-dd HH:mm:ss.SSS} %-5p (%t) [%X{collection} %X{shard} %X{replica} %X{core}] %c{1.} %m%n
+                    </Pattern>
+                </PatternLayout>
+            </Console>
+
+            <RollingFile
+                    name="RollingFile"
+                    fileName="${sys:solr.log.dir}/solr.log"
+                    filePattern="${sys:solr.log.dir}/solr.log.%i">
+                <PatternLayout>
+                    <Pattern>
+                        %d{yyyy-MM-dd HH:mm:ss.SSS} %-5p (%t) [%X{collection} %X{shard} %X{replica} %X{core}] %c{1.} %m%n
+                    </Pattern>
+                </PatternLayout>
+                <Policies>
+                    <OnStartupTriggeringPolicy/>
+                    <SizeBasedTriggeringPolicy size="64 MB"/>
+                </Policies>
+                <DefaultRolloverStrategy max="12"/>
+            </RollingFile>
+
+            <RollingFile
+                    name="SlowFile"
+                    fileName="${sys:solr.log.dir}/solr_slow_requests_json.log"
+                    filePattern="${sys:solr.log.dir}/solr_slow_requests_json.log.%i">
+                <JsonTemplateLayout/>
+                <Policies>
+                    <OnStartupTriggeringPolicy/>
+                    <SizeBasedTriggeringPolicy size="32 MB"/>
+                </Policies>
+                <DefaultRolloverStrategy max="6"/>
+            </RollingFile>
+
+            <RollingFile
+                    name="JsonFile"
+                    fileName="${sys:solr.log.dir}/json_solr.log"
+                    filePattern="${sys:solr.log.dir}/json_solr.log.%i">
+                <JsonTemplateLayout/>
+                <Policies>
+                    <OnStartupTriggeringPolicy/>
+                    <SizeBasedTriggeringPolicy size="64 MB"/>
+                </Policies>
+                <DefaultRolloverStrategy max="12"/>
+            </RollingFile>
+
+        </Appenders>
+        <Loggers>
+            <Logger name="org.apache.hadoop" level="warn"/>
+            <Logger name="org.apache.solr.update.LoggingInfoStream" level="off"/>
+            <Logger name="org.apache.zookeeper" level="warn"/>
+            <Logger name="org.apache.solr.core.SolrCore.SlowRequest" level="info" additivity="false">
+                <AppenderRef ref="SlowFile"/>
+            </Logger>
+
+            <Root level="warn">
+                <AppenderRef ref="RollingFile"/>
+                <AppenderRef ref="STDOUT"/>
+                <AppenderRef ref="JsonFile"/>
+            </Root>
+        </Loggers>
+    </Configuration>
+  solr.xml: |
+    <?xml version="1.0" encoding="UTF-8" ?>
+    <solr>
+        <solrcloud>
+            <str name="host">${host:}</str>
+            <int name="hostPort">${solr.port.advertise:8983}</int>
+            <str name="hostContext">${hostContext:solr}</str>
+            <bool name="genericCoreNodeNames">${genericCoreNodeNames:true}</bool>
+            <int name="zkClientTimeout">${zkClientTimeout:30000}</int>
+            <int name="distribUpdateSoTimeout">${distribUpdateSoTimeout:600000}</int>
+            <int name="distribUpdateConnTimeout">${distribUpdateConnTimeout:60000}</int>
+            <str name="zkCredentialsProvider">${zkCredentialsProvider:org.apache.solr.common.cloud.DefaultZkCredentialsProvider}</str>
+            <str name="zkACLProvider">${zkACLProvider:org.apache.solr.common.cloud.DefaultZkACLProvider}</str>
+        </solrcloud>
+
+        <shardHandlerFactory name="shardHandlerFactory" class="HttpShardHandlerFactory">
+            <int name="socketTimeout">${socketTimeout:600000}</int>
+            <int name="connTimeout">${connTimeout:60000}</int>
+        </shardHandlerFactory>
+    </solr>
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"qa-solrcloud-configmap-custom","namespace":"solr-qa","creationTimestamp":null},"data":{"log4j2.xml":"\u003c?xml version=\"1.0\" encoding=\"UTF-8\"?\u003e\n\u003cConfiguration\u003e\n    \u003cAppenders\u003e\n\n        \u003cConsole name=\"STDOUT\" target=\"SYSTEM_OUT\"\u003e\n            \u003cPatternLayout\u003e\n                \u003cPattern\u003e\n                    %d{yyyy-MM-dd HH:mm:ss.SSS} %-5p (%t) [%X{collection} %X{shard} %X{replica} %X{core}] %c{1.} %m%n\n                \u003c/Pattern\u003e\n            \u003c/PatternLayout\u003e\n        \u003c/Console\u003e\n\n        \u003cRollingFile\n                name=\"RollingFile\"\n                fileName=\"${sys:solr.log.dir}/solr.log\"\n                filePattern=\"${sys:solr.log.dir}/solr.log.%i\"\u003e\n            \u003cPatternLayout\u003e\n                \u003cPattern\u003e\n                    %d{yyyy-MM-dd HH:mm:ss.SSS} %-5p (%t) [%X{collection} %X{shard} %X{replica} %X{core}] %c{1.} %m%n\n                \u003c/Pattern\u003e\n            \u003c/PatternLayout\u003e\n            \u003cPolicies\u003e\n                \u003cOnStartupTriggeringPolicy/\u003e\n                \u003cSizeBasedTriggeringPolicy size=\"64 MB\"/\u003e\n            \u003c/Policies\u003e\n            \u003cDefaultRolloverStrategy max=\"12\"/\u003e\n        \u003c/RollingFile\u003e\n\n        \u003cRollingFile\n                name=\"SlowFile\"\n                fileName=\"${sys:solr.log.dir}/solr_slow_requests_json.log\"\n                filePattern=\"${sys:solr.log.dir}/solr_slow_requests_json.log.%i\"\u003e\n            \u003cJsonTemplateLayout/\u003e\n            \u003cPolicies\u003e\n                \u003cOnStartupTriggeringPolicy/\u003e\n                \u003cSizeBasedTriggeringPolicy size=\"32 MB\"/\u003e\n            \u003c/Policies\u003e\n            \u003cDefaultRolloverStrategy max=\"6\"/\u003e\n        \u003c/RollingFile\u003e\n\n        \u003cRollingFile\n                name=\"JsonFile\"\n                fileName=\"${sys:solr.log.dir}/json_solr.log\"\n                filePattern=\"${sys:solr.log.dir}/json_solr.log.%i\"\u003e\n            \u003cJsonTemplateLayout/\u003e\n            \u003cPolicies\u003e\n                \u003cOnStartupTriggeringPolicy/\u003e\n                \u003cSizeBasedTriggeringPolicy size=\"64 MB\"/\u003e\n            \u003c/Policies\u003e\n            \u003cDefaultRolloverStrategy max=\"12\"/\u003e\n        \u003c/RollingFile\u003e\n\n    \u003c/Appenders\u003e\n    \u003cLoggers\u003e\n        \u003cLogger name=\"org.apache.hadoop\" level=\"warn\"/\u003e\n        \u003cLogger name=\"org.apache.solr.update.LoggingInfoStream\" level=\"off\"/\u003e\n        \u003cLogger name=\"org.apache.zookeeper\" level=\"warn\"/\u003e\n        \u003cLogger name=\"org.apache.solr.core.SolrCore.SlowRequest\" level=\"info\" additivity=\"false\"\u003e\n            \u003cAppenderRef ref=\"SlowFile\"/\u003e\n        \u003c/Logger\u003e\n\n        \u003cRoot level=\"warn\"\u003e\n            \u003cAppenderRef ref=\"RollingFile\"/\u003e\n            \u003cAppenderRef ref=\"STDOUT\"/\u003e\n            \u003cAppenderRef ref=\"JsonFile\"/\u003e\n        \u003c/Root\u003e\n    \u003c/Loggers\u003e\n\u003c/Configuration\u003e\n","solr.xml":"\u003c?xml version=\"1.0\" encoding=\"UTF-8\" ?\u003e\n\u003csolr\u003e\n    \u003csolrcloud\u003e\n        \u003cstr name=\"host\"\u003e${host:}\u003c/str\u003e\n        \u003cint name=\"hostPort\"\u003e${solr.port.advertise:8983}\u003c/int\u003e\n        \u003cstr name=\"hostContext\"\u003e${hostContext:solr}\u003c/str\u003e\n        \u003cbool name=\"genericCoreNodeNames\"\u003e${genericCoreNodeNames:true}\u003c/bool\u003e\n        \u003cint name=\"zkClientTimeout\"\u003e${zkClientTimeout:30000}\u003c/int\u003e\n        \u003cint name=\"distribUpdateSoTimeout\"\u003e${distribUpdateSoTimeout:600000}\u003c/int\u003e\n        \u003cint name=\"distribUpdateConnTimeout\"\u003e${distribUpdateConnTimeout:60000}\u003c/int\u003e\n        \u003cstr name=\"zkCredentialsProvider\"\u003e${zkCredentialsProvider:org.apache.solr.common.cloud.DefaultZkCredentialsProvider}\u003c/str\u003e\n        \u003cstr name=\"zkACLProvider\"\u003e${zkACLProvider:org.apache.solr.common.cloud.DefaultZkACLProvider}\u003c/str\u003e\n    \u003c/solrcloud\u003e\n\n    \u003cshardHandlerFactory name=\"shardHandlerFactory\" class=\"HttpShardHandlerFactory\"\u003e\n        \u003cint name=\"socketTimeout\"\u003e${socketTimeout:600000}\u003c/int\u003e\n        \u003cint name=\"connTimeout\"\u003e${connTimeout:60000}\u003c/int\u003e\n    \u003c/shardHandlerFactory\u003e\n\u003c/solr\u003e\n"}}
+  creationTimestamp: null
+  name: qa-solrcloud-configmap-custom
+  namespace: solr-qa

@@ -100,8 +100,8 @@ spec:
 
   # Дополнительные настройки
   customSolrKubeOptions:
-#    configMapOptions:
-#      providedConfigMap: p4h-solrcloud-configmap-custom
+    configMapOptions:
+      providedConfigMap: qa-solrcloud-configmap-custom
     podOptions:
       resources:
         limits:
