@@ -4,10 +4,10 @@ namespace: solr-qa
 resources:
 - ns.yaml
 - cm.yaml
-- ingress.yaml
+#- ingress.yaml
 - solrcloud.yaml
 #- service.yaml
 #- deploy.yaml
 #- ingress.yaml
 commonAnnotations:
-  solr-qa/version: v1.0.6
+  solr-dev/version: v1.0.7

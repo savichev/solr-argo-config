@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: solr-dev
+  labels:
+    environment: dev
+    prometheus.io/scrape: "true"
