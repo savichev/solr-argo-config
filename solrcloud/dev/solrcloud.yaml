@@ -92,7 +92,7 @@ spec:
   solrAddressability:
     external:
       method: Ingress
-      domainName: "apps.p4h-shared-k8s.komus.net"
+      domainName: "apps.sandbox-k8s.komus.net"
       useExternalAddress: true
     commonServicePort: 80
     podPort: 8983

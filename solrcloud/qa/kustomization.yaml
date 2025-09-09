@@ -10,4 +10,4 @@ resources:
 #- deploy.yaml
 #- ingress.yaml
 commonAnnotations:
-  solrcloud/version: v1.0.4
+  solrcloud/version: v1.0.5
