@@ -4,7 +4,9 @@ metadata:
   name: solr-qa
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
+
 spec:
+  ingressClassName: nginx
   rules:
   - host: solr-qa-solr-qa-solrcloud.apps.p4h-shared-k8s.komus.net
     http:
@@ -15,4 +17,4 @@ spec:
           service:
             name: solr-qa-solrcloud-common
             port:
-              number: 443
+              name: http
