@@ -1,7 +1,7 @@
 apiVersion: solr.apache.org/v1beta1
 kind: SolrCloud
 metadata:
-  name: solr-qa
+  name: sandbox
   namespace: solr-qa
 spec:
   # Конфигурация ZooKeeper
@@ -50,7 +50,7 @@ spec:
   # Конфигурация Java
   solrJavaMem: "-Xms2g -Xmx2g"
   solrLogLevel: "INFO"
-#  solrOpts: "-Dsolr.environment=test,label=P4H,color=green"
+  solrOpts: "-Dsolr.environment=qa,label=QA,color=green"
 
   # Безопасность Solr
 #  solrSecurity:
@@ -101,7 +101,7 @@ spec:
   # Дополнительные настройки
   customSolrKubeOptions:
     configMapOptions:
-      providedConfigMap: qa-solrcloud-configmap-custom
+      providedConfigMap: configmap-custom
     podOptions:
       resources:
         limits:
