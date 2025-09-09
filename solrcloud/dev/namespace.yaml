@@ -3,6 +3,6 @@ kind: Namespace
 metadata:
   name: solr-dev
   labels:
-    name: solr
+    name: solr-dev
     # Метки для мониторинга (например, для Prometheus)
     #prometheus.io/scrape: "true"

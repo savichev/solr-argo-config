@@ -1,8 +1,8 @@
 apiVersion: solr.apache.org/v1beta1
 kind: SolrCloud
 metadata:
-  name: sandbox-qa
-  namespace: solr
+  name: solr-qa
+  namespace: solr-qa
 spec:
   # Конфигурация ZooKeeper
   zookeeperRef:
