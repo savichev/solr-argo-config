@@ -27,7 +27,7 @@ spec:
         reclaimPolicy: Delete
 
   # Конфигурация Solr
-  replicas: 2
+  replicas: 1
   solrImage:
     repository: "docker.komus.net/solr/komus-solr"
     tag: "9.5"
@@ -52,6 +52,7 @@ spec:
   solrLogLevel: "INFO"
 #  solrOpts: "-Dsolr.environment=test,label=P4H,color=green"
 
+  # Безопасность Solr
 #  solrSecurity:
 #    authenticationType: Basic
 #    basicAuthSecret: p4h-solrcloud-basic-auth
@@ -88,7 +89,7 @@ spec:
 #    method: StatefulSetUpdate
 #    restartSchedule: "0 4 * * *" # Например, ежедневная перезагрузка в 4 утра
 
-
+  # Доступ к сервису
   solrAddressability:
     external:
       method: Ingress
@@ -97,6 +98,7 @@ spec:
     commonServicePort: 80
     podPort: 8983
 
+  # Дополнительные настройки
   customSolrKubeOptions:
 #    configMapOptions:
 #      providedConfigMap: p4h-solrcloud-configmap-custom

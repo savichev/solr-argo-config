@@ -27,7 +27,7 @@ spec:
         reclaimPolicy: Delete
 
   # Конфигурация Solr
-  replicas: 2
+  replicas: 1
   solrImage:
     repository: "docker.komus.net/solr/komus-solr"
     tag: "9.5"
