@@ -1,6 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: solr-qa
+namespace: solr-dev
 resources:
 - ns.yaml
 - cm.yaml
@@ -10,4 +10,4 @@ resources:
 #- deploy.yaml
 #- ingress.yaml
 commonAnnotations:
-  solr-dev/version: v1.0.8
+  solr-dev/version: v1.1.0

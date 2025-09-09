@@ -15,7 +15,7 @@ metadata:
 
 spec:
   rules:
-  - host: solr-dev-solr-qa-solrcloud.apps.sandbox-k8s.komus.net
+  - host: solr-dev-solr-dev-solrcloud.apps.sandbox-k8s.komus.net
     http:
       paths:
       - path: /

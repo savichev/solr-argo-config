@@ -98,8 +98,8 @@ spec:
     podPort: 8983
 
   customSolrKubeOptions:
-#    configMapOptions:
-#      providedConfigMap: p4h-solrcloud-configmap-custom
+    configMapOptions:
+      providedConfigMap: configmap-custom
     podOptions:
       resources:
         limits:
