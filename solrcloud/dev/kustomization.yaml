@@ -4,7 +4,6 @@ namespace: solr-dev
 resources:
 - ns.yaml
 - cm.yaml
-#- ingress.yaml
 - solrcloud.yaml
 #- service.yaml
 #- deploy.yaml
