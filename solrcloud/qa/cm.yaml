@@ -1,4 +1,10 @@
 apiVersion: v1
+kind: ConfigMap
+metadata:
+#  annotations:
+#    argocd.argoproj.io/sync-wave: "0" # Волна синхронизации - выполняется первой
+  name: configmap-custom
+  namespace: solr-qa
 data:
   log4j2.xml: |
     <?xml version="1.0" encoding="UTF-8"?>
@@ -89,9 +95,3 @@ data:
             <int name="connTimeout">${connTimeout:60000}</int>
         </shardHandlerFactory>
     </solr>
-kind: ConfigMap
-metadata:
-  annotations:
-    argocd.argoproj.io/sync-wave: "0" # Волна синхронизации - выполняется первой
-  name: configmap-custom
-  namespace: solr-qa

@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: solr-qa
+  labels:
+    environment: qa
+    prometheus.io/scrape: "true"
