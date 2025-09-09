@@ -50,7 +50,7 @@ spec:
   # Конфигурация Java
   solrJavaMem: "-Xms2g -Xmx2g"
   solrLogLevel: "INFO"
-  solrOpts: "-Dsolr.environment=qa,label=QA,color=green"
+#  solrOpts: "-Dsolr.environment=qa,label=QA,color=green"
 
   # Безопасность Solr
 #  solrSecurity:
